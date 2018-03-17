@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 映射配置 -->
+<mapper namespace="com.film.mapper.FilmMapper">
+
+	<!-- 映射findById方法的sql -->
+	<select id="queryFilmListByCondition" parameterType="com.film.vo.FilmVo"
+		resultType="Film">
+		<!-- 方法要执行的sql -->
+		select * from ssm_movie f
+		<where>
+			delFlag = '0'
+			<if test="film != null and film.filmName != null and film.filmName != ''">
+				and f.filmName like '%${film.filmName}%'
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id查询记录 -->
+	<select id="selectFilmByPrimaryKey" parameterType="int"
+		resultType="Film">
+		select * from ssm_movie f where delFlag = '0' and f.id =
+		#{value}
+	</select>
+
+
+	<!-- 插入操作 -->
+	<insert id="save" parameterType="Film">
+		insert into ssm_movie(id,
+		filmName,
+		<if test="filmPic != null and filmPic != ''">
+			filmPic,
+		</if>
+		years,
+		types,
+		language,
+		caption,
+		director,
+		actors,
+		releaseTime,
+		playTime,
+		remarks,
+		filmCode,
+		playRoom,
+		delFlag)
+		values(
+		s_film_id.nextval,
+		#{filmName},
+		<if test="filmPic != null and filmPic != ''">
+			#{filmPic},
+		</if>
+		#{years},
+		#{types},
+		#{language},
+		#{caption},
+		#{director},
+		#{actors},
+		#{releaseTime},
+		#{playTime},
+		#{remarks},
+		#{filmCode},
+		#{playRoom},
+		#{delFlag})
+	</insert>
+
+	<!-- 更新操作 -->
+	<update id="update" parameterType="Film">
+		update ssm_movie set
+		<if test="filmName != null and filmName != ''">
+			filmName = #{filmName},
+		</if>
+		<if test="filmPic != null and filmPic != ''">
+			filmPic = #{filmPic},
+		</if>
+		<if test="years != null and years != ''">
+			years = #{years},
+		</if>
+		<if test="types != null and types != ''">
+			types = #{types},
+		</if>
+		<if test="language != null and language != ''">
+			language = #{language},
+		</if>
+		<if test="caption != null and caption != ''">
+			caption = #{caption},
+		</if>
+		<if test="director != null and director != ''">
+			director = #{director},
+		</if>
+		<if test="actors != null and actors != ''">
+			actors = #{actors},
+		</if>
+		<if test="releaseTime != null and releaseTime != ''">
+			releaseTime = #{releaseTime},
+		</if>
+		<if test="playTime != null and playTime != ''">
+			playTime = #{playTime},
+		</if>
+		<if test="remarks != null and remarks != ''">
+			remarks = #{remarks},
+		</if>
+		<if test="filmCode != null and filmCode != ''">
+			filmCode = #{filmCode},
+		</if>
+		<if test="playRoom != null and playRoom != ''">
+			playRoom = #{playRoom}
+		</if>
+		where id = #{id}
+	</update>
+
+	<!-- 批量删除 -->
+	<update id="batchDeleteFilms" parameterType="int">
+		update ssm_movie set delFlag = '1' where id in
+		<foreach collection="array" item="filmId" open="(" separator=","
+			close=")">
+			#{filmId}
+		</foreach>
+	</update>
+</mapper>
